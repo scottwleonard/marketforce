@@ -33,7 +33,7 @@ func _build_title_screen() -> void:
 
 	# Title
 	var title = Label.new()
-	title.text = "CAPSIM"
+	title.text = "MARKETFORCE"
 	title.add_theme_font_size_override("font_size", 48)
 	title.add_theme_color_override("font_color", Color.WHITE)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

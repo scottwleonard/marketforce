@@ -1,4 +1,4 @@
-# CapSim Business Simulation
+# MarketForce Business Simulation
 
 ## Dimension: 2D
 

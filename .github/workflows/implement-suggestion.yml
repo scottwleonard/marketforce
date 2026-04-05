@@ -1,0 +1,69 @@
+name: Implement Community Suggestion
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  implement:
+    if: github.event.label.name == 'approved'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          label_trigger: "approved"
+          base_branch: "main"
+          branch_prefix: "community/"
+          claude_args: |
+            --allowedTools "Read,Write,Edit,Bash(git:*),Bash(gh issue:*),Bash(gh pr:*),Bash(ls:*),Bash(cat:*),Bash(find:*),Bash(grep:*),Bash(godot:*)"
+          prompt: |
+            You are implementing a community suggestion for the MarketForce business simulation game.
+            Read CLAUDE.md for project context and coding guidelines.
+
+            Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+
+            ${{ github.event.issue.body }}
+
+            ## Instructions
+
+            0. **Triage first.** Read the suggestion and classify it:
+               - If it's a new feature: `gh issue edit ${{ github.event.issue.number }} --add-label enhancement`
+               - If it's a bug report: `gh issue edit ${{ github.event.issue.number }} --add-label bug`
+               - If it's incomprehensible or nonsensical in the context of the game:
+                 `gh issue edit ${{ github.event.issue.number }} --add-label invalid`
+                 Comment explaining why, close the issue, and **stop here** — do not implement.
+               - If it needs clarification:
+                 `gh issue edit ${{ github.event.issue.number }} --add-label question`
+                 Comment asking for details and **stop here** — do not implement yet.
+
+            1. Comment on issue #${{ github.event.issue.number }} that you are starting work:
+               gh issue comment ${{ github.event.issue.number }} --body "🔧 Starting implementation..."
+
+            2. Create a descriptive branch name based on the suggestion content.
+               Use the format: community/issue-${{ github.event.issue.number }}-<short-kebab-description>
+               Example: community/issue-27-add-segment-chart
+
+            3. Implement the changes:
+               - Keep changes minimal and focused
+               - This is a Godot 4.x project using GDScript
+               - Read STRUCTURE.md for the architecture
+               - Match the corporate navy blue/white UI style
+               - Test changes with: godot --headless --quit
+
+            4. Commit and push the branch
+
+            5. Open a PR referencing issue #${{ github.event.issue.number }}
+
+            6. Comment on issue #${{ github.event.issue.number }} with a summary of what was done and a link to the PR:
+               gh issue comment ${{ github.event.issue.number }} --body "✅ Implementation complete! PR: <pr-url>"

@@ -44,7 +44,7 @@ func _build_ui() -> void:
 
 	# Logo / title
 	var logo = Label.new()
-	logo.text = "CAPSIM"
+	logo.text = "MARKETFORCE"
 	logo.add_theme_font_size_override("font_size", 22)
 	logo.add_theme_color_override("font_color", Color.WHITE)
 	logo.position = Vector2(20, 10)

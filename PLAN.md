@@ -1,8 +1,8 @@
-# Game Plan: CapSim Business Simulation
+# Game Plan: MarketForce Business Simulation
 
 ## Game Description
 
-Multiplayer competitive business strategy simulation like Capsim. 8 rounds. Each player manages a company with 4 products across 5 market segments (Traditional, Low End, High End, Performance, Size). Core departments: R&D (product repositioning, age, MTBF), Marketing (price, promotion budget, sales budget), Production (capacity, automation, scheduling), Finance (stock issues, retire stock, bonds, dividends, short/long term debt). Dashboard with financial reports (income statement, balance sheet, cash flow), market share charts, production analysis, and segment analysis. Professional corporate UI with navy/dark blue headers, data tables, tabs for each department. Round-based: all players submit decisions then results calculated simultaneously. Competitive results shown between teams each round.
+Multiplayer competitive business strategy simulation like MarketForce. 8 rounds. Each player manages a company with 4 products across 5 market segments (Traditional, Low End, High End, Performance, Size). Core departments: R&D (product repositioning, age, MTBF), Marketing (price, promotion budget, sales budget), Production (capacity, automation, scheduling), Finance (stock issues, retire stock, bonds, dividends, short/long term debt). Dashboard with financial reports (income statement, balance sheet, cash flow), market share charts, production analysis, and segment analysis. Professional corporate UI with navy/dark blue headers, data tables, tabs for each department. Round-based: all players submit decisions then results calculated simultaneously. Competitive results shown between teams each round.
 
 ## Risk Tasks
 
