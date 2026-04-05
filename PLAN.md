@@ -62,13 +62,13 @@ Build a complete business simulation with:
 
 ## Status
 
-- [ ] Scaffold
-- [ ] Core simulation engine
-- [ ] UI theme and layout
-- [ ] R&D department
-- [ ] Marketing department
-- [ ] Production department
-- [ ] Finance department
-- [ ] Reports and charts
-- [ ] Game flow and AI
-- [ ] Presentation video
+- [x] Scaffold
+- [x] Core simulation engine
+- [x] UI theme and layout
+- [x] R&D department
+- [x] Marketing department
+- [x] Production department
+- [x] Finance department
+- [x] Reports and charts
+- [x] Game flow and AI
+- [x] Presentation video
