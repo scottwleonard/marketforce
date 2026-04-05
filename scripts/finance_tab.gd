@@ -9,6 +9,11 @@ func _ready() -> void:
 	_build_ui()
 
 func _build_ui() -> void:
+	var bg = ColorRect.new()
+	bg.color = Color(0.96, 0.96, 0.97)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+
 	var title = Label.new()
 	title.text = "Finance"
 	title.add_theme_font_size_override("font_size", 18)
@@ -24,7 +29,7 @@ func _build_ui() -> void:
 	add_child(subtitle)
 
 	var gm = _get_game_manager()
-	if gm == null:
+	if gm == null or gm.companies.is_empty():
 		return
 	var co: Dictionary = gm.get_player_company()
 

@@ -11,6 +11,11 @@ func _ready() -> void:
 	_build_ui()
 
 func _build_ui() -> void:
+	var bg = ColorRect.new()
+	bg.color = Color(0.96, 0.96, 0.97)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+
 	var title = Label.new()
 	title.text = "Marketing"
 	title.add_theme_font_size_override("font_size", 18)
@@ -24,6 +29,10 @@ func _build_ui() -> void:
 	subtitle.add_theme_color_override("font_color", LABEL_COLOR)
 	subtitle.position = Vector2(20, 36)
 	add_child(subtitle)
+
+	var gm = _get_game_manager()
+	if gm == null or gm.companies.is_empty():
+		return
 
 	var headers = ["Product", "Segment", "Price ($)", "Promo Budget ($M)", "Sales Budget ($M)", "Awareness", "Accessibility", "Units Sold"]
 	var col_x = [20, 120, 220, 340, 490, 640, 740, 850]
@@ -42,9 +51,6 @@ func _build_ui() -> void:
 		lbl.position = Vector2(col_x[i], 65)
 		add_child(lbl)
 
-	var gm = _get_game_manager()
-	if gm == null:
-		return
 	var company: Dictionary = gm.get_player_company()
 
 	for i in range(company["products"].size()):

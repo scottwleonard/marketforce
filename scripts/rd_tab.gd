@@ -11,6 +11,12 @@ func _ready() -> void:
 	_build_ui()
 
 func _build_ui() -> void:
+	# White background
+	var bg = ColorRect.new()
+	bg.color = Color(0.96, 0.96, 0.97)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+
 	# Section title
 	var title = Label.new()
 	title.text = "Research & Development"
@@ -25,6 +31,10 @@ func _build_ui() -> void:
 	subtitle.add_theme_color_override("font_color", LABEL_COLOR)
 	add_child(subtitle)
 	subtitle.position = Vector2(20, 36)
+
+	var gm = _get_game_manager()
+	if gm == null or gm.companies.is_empty():
+		return
 
 	# Table header
 	var headers = ["Product", "Segment", "Pfmn", "Size", "MTBF", "Age", "Mat Cost", "Revision"]
@@ -43,10 +53,6 @@ func _build_ui() -> void:
 		lbl.position = Vector2(col_x[i], 65)
 		add_child(lbl)
 
-	# Product rows
-	var gm = _get_game_manager()
-	if gm == null:
-		return
 	var company: Dictionary = gm.get_player_company()
 
 	for i in range(company["products"].size()):
@@ -137,19 +143,19 @@ func _build_ui() -> void:
 			"age_lbl": age_lbl, "cost_lbl": cost_lbl, "rev_lbl": rev_lbl
 		})
 
-	# Perceptual map
+	# Perceptual map — positioned to the right of the table
 	var map_label = Label.new()
 	map_label.text = "Perceptual Map"
 	map_label.add_theme_font_size_override("font_size", 14)
 	map_label.add_theme_color_override("font_color", HEADER_COLOR)
-	map_label.position = Vector2(20, 280)
+	map_label.position = Vector2(860, 60)
 	add_child(map_label)
 
 	var pmap_script = load("res://scripts/perceptual_map.gd")
 	var pmap = Control.new()
 	pmap.set_script(pmap_script)
-	pmap.position = Vector2(20, 300)
-	pmap.size = Vector2(500, 320)
+	pmap.position = Vector2(860, 82)
+	pmap.size = Vector2(380, 350)
 	add_child(pmap)
 
 	# Populate map

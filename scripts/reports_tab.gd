@@ -7,11 +7,24 @@ const LABEL_COLOR = Color(0.3, 0.3, 0.3)
 const SUB_HEADER_COLOR = Color(0.15, 0.2, 0.55)
 
 var current_report: String = "income"
+var _report_container: Control = null
+
+func _add_to_report(node: Node) -> void:
+	if _report_container:
+		_report_container.add_child(node)
+	else:
+		add_child(node)
 
 func _ready() -> void:
 	_build_ui()
 
 func _build_ui() -> void:
+	# White background
+	var bg = ColorRect.new()
+	bg.color = Color(0.96, 0.96, 0.97)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+
 	# Report selector buttons
 	var btn_y: float = 10.0
 	var btn_x: float = 20.0
@@ -30,11 +43,25 @@ func _build_ui() -> void:
 		add_child(btn)
 		btn_x += 140
 
-	var content_y: float = 50.0
 	var gm = _get_game_manager()
-	if gm == null:
+	if gm == null or gm.companies.is_empty():
 		return
 	var co: Dictionary = gm.get_player_company()
+
+	# ScrollContainer for long reports
+	var scroll = ScrollContainer.new()
+	scroll.position = Vector2(0, 46)
+	scroll.size = Vector2(1260, 560)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(scroll)
+
+	var content = Control.new()
+	content.custom_minimum_size = Vector2(1240, 900)
+	scroll.add_child(content)
+
+	# Redirect add_child to content container
+	var content_y: float = 10.0
+	_report_container = content
 
 	match current_report:
 		"income":
@@ -49,6 +76,8 @@ func _build_ui() -> void:
 			_build_segment_analysis(gm, content_y)
 		"scoreboard":
 			_build_scoreboard(gm, content_y)
+
+	_report_container = null
 
 func _build_income_statement(co: Dictionary, start_y: float) -> void:
 	var y: float = start_y
@@ -82,7 +111,7 @@ func _build_income_statement(co: Dictionary, start_y: float) -> void:
 			line.color = Color(0.8, 0.8, 0.8)
 			line.position = Vector2(20, y)
 			line.size = Vector2(500, 1)
-			add_child(line)
+			_add_to_report(line)
 			y += 6
 		else:
 			var is_total: bool = item[0] in ["Gross Margin", "EBIT", "Net Profit", "Earnings Before Tax"]
@@ -170,7 +199,7 @@ func _build_market_share(gm, start_y: float) -> void:
 	chart.set_script(chart_script)
 	chart.position = Vector2(20, y)
 	chart.size = Vector2(600, 280)
-	add_child(chart)
+	_add_to_report(chart)
 
 	var names: Array = []
 	var shares: Array = []
@@ -185,7 +214,7 @@ func _build_market_share(gm, start_y: float) -> void:
 	rev_chart.set_script(chart_script)
 	rev_chart.position = Vector2(640, y)
 	rev_chart.size = Vector2(400, 280)
-	add_child(rev_chart)
+	_add_to_report(rev_chart)
 
 	var revenues: Array = []
 	for co in gm.companies:
@@ -226,7 +255,7 @@ func _build_scoreboard(gm, start_y: float) -> void:
 	hdr_bg.color = HEADER_COLOR
 	hdr_bg.position = Vector2(10, y)
 	hdr_bg.size = Vector2(780, 28)
-	add_child(hdr_bg)
+	_add_to_report(hdr_bg)
 
 	for i in range(headers.size()):
 		var lbl = Label.new()
@@ -234,7 +263,7 @@ func _build_scoreboard(gm, start_y: float) -> void:
 		lbl.add_theme_font_size_override("font_size", 12)
 		lbl.add_theme_color_override("font_color", Color.WHITE)
 		lbl.position = Vector2(col_x[i], y + 5)
-		add_child(lbl)
+		_add_to_report(lbl)
 	y += 32
 
 	var rankings = gm.get_rankings()
@@ -246,7 +275,7 @@ func _build_scoreboard(gm, start_y: float) -> void:
 			row_bg.color = Color(0.85, 0.9, 1.0)
 		row_bg.position = Vector2(10, y - 2)
 		row_bg.size = Vector2(780, 28)
-		add_child(row_bg)
+		_add_to_report(row_bg)
 
 		var vals = [
 			str(r + 1),
@@ -263,7 +292,7 @@ func _build_scoreboard(gm, start_y: float) -> void:
 			lbl.add_theme_font_size_override("font_size", 12)
 			lbl.add_theme_color_override("font_color", Color.BLACK)
 			lbl.position = Vector2(col_x[c], y)
-			add_child(lbl)
+			_add_to_report(lbl)
 		y += 28
 
 func _add_report_header(text: String, x: float, y: float) -> void:
@@ -271,26 +300,26 @@ func _add_report_header(text: String, x: float, y: float) -> void:
 	bg.color = HEADER_COLOR
 	bg.position = Vector2(x - 10, y)
 	bg.size = Vector2(1000, 30)
-	add_child(bg)
+	_add_to_report(bg)
 	var lbl = Label.new()
 	lbl.text = text
 	lbl.add_theme_font_size_override("font_size", 14)
 	lbl.add_theme_color_override("font_color", Color.WHITE)
 	lbl.position = Vector2(x, y + 5)
-	add_child(lbl)
+	_add_to_report(lbl)
 
 func _add_sub_header(text: String, x: float, y: float) -> void:
 	var bg = ColorRect.new()
 	bg.color = SUB_HEADER_COLOR
 	bg.position = Vector2(x - 5, y)
 	bg.size = Vector2(500, 24)
-	add_child(bg)
+	_add_to_report(bg)
 	var lbl = Label.new()
 	lbl.text = text
 	lbl.add_theme_font_size_override("font_size", 12)
 	lbl.add_theme_color_override("font_color", Color.WHITE)
 	lbl.position = Vector2(x, y + 3)
-	add_child(lbl)
+	_add_to_report(lbl)
 
 func _add_financial_row(label_text: String, value_text: String, x: float, y: float, is_bold: bool) -> void:
 	var lbl = Label.new()
@@ -298,13 +327,13 @@ func _add_financial_row(label_text: String, value_text: String, x: float, y: flo
 	lbl.add_theme_font_size_override("font_size", 13 if is_bold else 12)
 	lbl.add_theme_color_override("font_color", Color.BLACK if is_bold else LABEL_COLOR)
 	lbl.position = Vector2(x, y)
-	add_child(lbl)
+	_add_to_report(lbl)
 	var val = Label.new()
 	val.text = value_text
 	val.add_theme_font_size_override("font_size", 13 if is_bold else 12)
 	val.add_theme_color_override("font_color", Color.BLACK)
 	val.position = Vector2(x + 300, y)
-	add_child(val)
+	_add_to_report(val)
 
 func _on_report_selected(report_key: String) -> void:
 	current_report = report_key

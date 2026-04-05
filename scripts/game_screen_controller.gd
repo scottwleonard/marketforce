@@ -22,6 +22,13 @@ func _ready() -> void:
 	if gm:
 		gm.round_completed.connect(_on_round_completed)
 		gm.game_ended.connect(_on_game_ended)
+		gm.game_started.connect(_on_game_started)
+
+func _on_game_started() -> void:
+	_update_header()
+	for tab in tab_scripts:
+		if tab.has_method("refresh"):
+			tab.refresh()
 
 func _build_ui() -> void:
 	anchors_preset = Control.PRESET_FULL_RECT
@@ -152,9 +159,11 @@ func _build_ui() -> void:
 
 	results_label = Label.new()
 	results_label.position = Vector2(20, 50)
-	results_label.size = Vector2(760, 380)
+	results_label.size = Vector2(760, 370)
 	results_label.add_theme_font_size_override("font_size", 13)
+	results_label.add_theme_color_override("font_color", Color.BLACK)
 	results_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	results_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	results_popup.add_child(results_label)
 
 	var close_btn = Button.new()
@@ -168,7 +177,7 @@ func _build_ui() -> void:
 
 func _update_header() -> void:
 	var gm = _get_game_manager()
-	if gm == null:
+	if gm == null or gm.companies.is_empty():
 		return
 	var co: Dictionary = gm.get_player_company()
 	header_company_label.text = "Company: " + co["name"]
